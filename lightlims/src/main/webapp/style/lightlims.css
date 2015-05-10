@@ -1,0 +1,11 @@
+.templates {
+    display: none;
+}
+
+.hero-unit {
+    padding: 40px;
+}
+
+.hero-unit h1 {
+    margin-bottom: 10px;
+}
