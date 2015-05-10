@@ -9,12 +9,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Controller
+@RestController
 @Transactional
 @RequestMapping("/job")
 public class JobController  {
@@ -23,14 +24,14 @@ public class JobController  {
     private EntityManager store;
 
     @RequestMapping(method = RequestMethod.GET)
-    public @ResponseBody List<Job> read(){
+    public List<Job> read(){
         return store
                 .createQuery("SELECT j FROM Job j", Job.class)
                 .getResultList();
     }
 
     @RequestMapping(value = "{code}", method = RequestMethod.GET)
-    public @ResponseBody Job read(@PathVariable String code){
+    public Job read(@PathVariable String code){
         return store
                 .createQuery("SELECT j FROM Job j WHERE code = :code", Job.class)
                 .setParameter("code", code)

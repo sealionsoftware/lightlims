@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Controller
+@RestController
 @Transactional
 @RequestMapping("/job/{jobCode}/sample")
 public class SampleController {
@@ -26,14 +27,14 @@ public class SampleController {
     private EntityManager store;
 
     @RequestMapping(method = RequestMethod.GET)
-    public @ResponseBody List<Sample> read(){
+    public List<Sample> read(){
         return store
                 .createQuery("SELECT s FROM Sample s", Sample.class)
                 .getResultList();
     }
 
     @RequestMapping(value = "{code}", method = RequestMethod.GET)
-    public @ResponseBody Sample read(@PathVariable String jobCode, @PathVariable String code){
+    public Sample read(@PathVariable String jobCode, @PathVariable String code){
         return store
                 .createQuery("SELECT s FROM Sample s WHERE job.code = :jobCode AND code = :code", Sample.class)
                 .setParameter("jobCode", jobCode)
