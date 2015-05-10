@@ -2,6 +2,7 @@ package com.sealionsoftware.lightlims.controller;
 
 import com.sealionsoftware.lightlims.domain.Job;
 import com.sealionsoftware.lightlims.domain.Sample;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,43 +17,47 @@ import java.util.List;
 
 @Controller
 @Transactional
-@RequestMapping("/job")
-public class JobController  {
+@RequestMapping("/job/{jobCode}/sample")
+public class SampleController {
 
+    @Autowired
+    private JobController jobController;
     @PersistenceContext
     private EntityManager store;
 
     @RequestMapping(method = RequestMethod.GET)
-    public @ResponseBody List<Job> read(){
+    public @ResponseBody List<Sample> read(){
         return store
-                .createQuery("SELECT j FROM Job j", Job.class)
+                .createQuery("SELECT s FROM Sample s", Sample.class)
                 .getResultList();
     }
 
     @RequestMapping(value = "{code}", method = RequestMethod.GET)
-    public @ResponseBody Job read(@PathVariable String code){
+    public @ResponseBody Sample read(@PathVariable String jobCode, @PathVariable String code){
         return store
-                .createQuery("SELECT j FROM Job j WHERE code = :code", Job.class)
+                .createQuery("SELECT s FROM Sample s WHERE job.code = :jobCode AND code = :code", Sample.class)
+                .setParameter("jobCode", jobCode)
                 .setParameter("code", code)
                 .getSingleResult();
     }
 
     @RequestMapping(method = RequestMethod.PUT)
-    public void create(@RequestBody Job job){
-        store.persist(job);
+    public void create(@PathVariable String jobCode, @RequestBody Sample sample){
+        Job job = jobController.read(jobCode);
+        sample.setJob(job);
+        store.persist(sample);
     }
 
     @RequestMapping(value = "{code}", method = RequestMethod.POST)
-    public void update(@PathVariable String code, @RequestBody Job job){
-        Job original = read(code);
-        original.merge(job);
+    public void update(@PathVariable String jobCode, @PathVariable String code, @RequestBody Sample sample){
+        Sample original = read(jobCode, code);
+        original.merge(sample);
         store.merge(original);
     }
 
     @RequestMapping(value = "{code}", method = RequestMethod.DELETE)
-    public void delete(@PathVariable String code){
-        Job original = read(code);
+    public void delete(@PathVariable String jobCode, @PathVariable String code){
+        Sample original = read(jobCode, code);
         store.remove(original);
-
     }
 }

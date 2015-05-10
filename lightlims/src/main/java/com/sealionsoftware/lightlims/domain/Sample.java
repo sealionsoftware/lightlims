@@ -1,23 +1,28 @@
 package com.sealionsoftware.lightlims.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name = "JOB", indexes = {
-        @Index(name = "key", columnList = "code", unique = true)
+@Table(name = "SAMPLE", indexes = {
+       @Index(name = "key", columnList = "job_identity, code", unique = true)
 })
-public class Job extends MergableEntity {
+public class Sample extends MergableEntity {
 
-    protected Job(){}
+    protected Sample(){}
 
-    public Job(String code) {
+    public Sample(Job job, String code) {
+        this.job = job;
         this.code = code;
     }
 
     private String code;
+    private Job job;
 
     public String getCode() {
         return code;
@@ -25,6 +30,15 @@ public class Job extends MergableEntity {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    @ManyToOne(optional = false)
+    public Job getJob() {
+        return job;
+    }
+
+    public void setJob(Job job) {
+        this.job = job;
     }
 
     public String getDescription() {
