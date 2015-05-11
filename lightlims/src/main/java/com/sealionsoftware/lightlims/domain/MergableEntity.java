@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Access(AccessType.PROPERTY)
 @MappedSuperclass
-public class MergableEntity {
+public class MergableEntity<T extends MergableEntity> {
 
     protected Map<String, Object> fields = new HashMap<>();
 
@@ -25,7 +25,7 @@ public class MergableEntity {
     @JsonIgnore
     private int identity;
 
-    public void merge(MergableEntity partialUpdate){
+    public <U extends T> void merge(U partialUpdate){
         fields.putAll(partialUpdate.fields);
     }
 }

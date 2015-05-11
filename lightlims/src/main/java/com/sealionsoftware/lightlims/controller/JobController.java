@@ -2,6 +2,10 @@ package com.sealionsoftware.lightlims.controller;
 
 import com.sealionsoftware.lightlims.domain.Job;
 import com.sealionsoftware.lightlims.domain.Sample;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.messaging.core.MessageSendingOperations;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,8 +26,12 @@ public class JobController  {
 
     @PersistenceContext
     private EntityManager store;
+    @Autowired
+    private SimpMessagingTemplate brokerMessagingTemplate;
+
 
     @RequestMapping(method = RequestMethod.GET)
+//    @SubscribeEvent("/job")
     public List<Job> read(){
         return store
                 .createQuery("SELECT j FROM Job j", Job.class)
@@ -41,6 +49,7 @@ public class JobController  {
     @RequestMapping(method = RequestMethod.PUT)
     public void create(@RequestBody Job job){
         store.persist(job);
+        brokerMessagingTemplate.convertAndSend("/job", job);
     }
 
     @RequestMapping(value = "{code}", method = RequestMethod.POST)

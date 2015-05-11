@@ -15,7 +15,7 @@ import javax.persistence.Transient;
 @Table(name = "SAMPLE", indexes = {
        @Index(name = "key", columnList = "job_identity, code", unique = true)
 })
-public class Sample extends MergableEntity {
+public class Sample extends MergableEntity<Sample> {
 
     protected Sample(){}
 

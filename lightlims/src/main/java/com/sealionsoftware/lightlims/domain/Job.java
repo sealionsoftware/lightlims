@@ -9,7 +9,7 @@ import javax.persistence.Transient;
 @Table(name = "JOB", indexes = {
         @Index(name = "key", columnList = "code", unique = true)
 })
-public class Job extends MergableEntity {
+public class Job extends MergableEntity<Job> {
 
     protected Job(){}
 

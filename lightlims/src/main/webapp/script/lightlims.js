@@ -13,4 +13,12 @@ $( document ).ready(function() {
         });
     });
 
+    var client = Stomp.over(new SockJS("/resource"));
+    client.connect({}, function(frame) {
+        console.log('SockJS: ' + frame.command);
+        client.subscribe('/job', function(msg){
+            alert(msg);
+        });
+    });
+
 });
