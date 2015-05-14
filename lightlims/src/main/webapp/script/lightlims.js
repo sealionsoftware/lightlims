@@ -13,6 +13,8 @@ $( document ).ready(function() {
         });
     });
 
+    var jobCache = [];
+
     var client = Stomp.over(new SockJS("/resource"));
     client.connect({}, function(frame) {
         console.log('SockJS: ' + frame.command);
